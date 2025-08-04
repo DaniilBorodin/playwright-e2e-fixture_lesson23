@@ -19,7 +19,7 @@ import { faker } from '@faker-js/faker/locale/ar'
       localStorage.setItem('jwt', token)
     }, auth)
     await page.goto(SERVICE_URL)
-    //Используем в данные из таблицы тестов
+    //Используем в тестах данные из таблицы
     await page.getByTestId('username-input').fill(username)
     await page.getByTestId('phone-input').fill(phone)
     await page.getByTestId('createOrder-button').click()

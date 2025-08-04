@@ -2,14 +2,36 @@ import { expect, test } from '../fixtures/delivery.fixture'
 import { SERVICE_URL } from '../../config/env-data'
 import { faker } from '@faker-js/faker/locale/ar'
 
+//Объявляем таблицу параметров(могут быть любыми)
+;[
+  { username: 'Daniil', phone: '+3716782992' },
+  { username: 'Bob', phone: '+3716782993' },
+  { username: 'Charlie', phone: '+3716782994' },
+  //В параметрах forEach говорим, с какими столбцами таблицы хотим работать в тесте
+].forEach(({ username, phone }) => {
+  //можем уже в описании теста использовать данные из таблицы
+  test(`Create order through UI with fixture with ${username} ${phone}`, async ({
+    context,
+    auth,
+  }) => {
+    const page = await context.newPage()
+    await context.addInitScript((token) => {
+      localStorage.setItem('jwt', token)
+    }, auth)
+    await page.goto(SERVICE_URL)
+    //Используем в данные из таблицы тестов
+    await page.getByTestId('username-input').fill(username)
+    await page.getByTestId('phone-input').fill(phone)
+    await page.getByTestId('createOrder-button').click()
+    await expect(page.getByTestId('orderSuccessfullyCreated-popup-ok-button')).toBeVisible()
+  })
+})
+
 test('create order through UI with fixture', async ({ context, auth }) => {
   const page = await context.newPage()
-
-  // Set JWT in localStorage
   await context.addInitScript((token) => {
     localStorage.setItem('jwt', token)
-  }, auth.jwt)
-
+  }, auth)
   await page.goto(SERVICE_URL)
   await page.getByTestId('username-input').fill(faker.internet.username())
   await page.getByTestId('phone-input').fill(faker.phone.number())
@@ -25,7 +47,7 @@ test('search for an existing order created through API with fixture', async ({
   // Set JWT in localStorage
   await context.addInitScript((token) => {
     localStorage.setItem('jwt', token)
-  }, auth.jwt)
+  }, auth)
 
   // Search for the created order through the UI
   const page = await context.newPage()

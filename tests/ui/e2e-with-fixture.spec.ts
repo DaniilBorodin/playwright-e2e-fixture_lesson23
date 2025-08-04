@@ -2,16 +2,18 @@ import { expect, test } from '../fixtures/delivery.fixture'
 import { SERVICE_URL } from '../../config/env-data'
 import { faker } from '@faker-js/faker/locale/ar'
 
-
 //Объявляем таблицу параметров(могут быть любыми)
-[
+;[
   { username: 'Daniil', phone: '+3716782992' },
   { username: 'Bob', phone: '+3716782993' },
   { username: 'Charlie', phone: '+3716782994' },
-//В параметрах forEach говорим, с какими столбцами таблицы хотим работать в тесте
+  //В параметрах forEach говорим, с какими столбцами таблицы хотим работать в тесте
 ].forEach(({ username, phone }) => {
   //можем уже в описании теста использовать данные из таблицы
-  test(`Create order through UI with fixture with ${username} ${phone}`, async ({ context, auth }) => {
+  test(`Create order through UI with fixture with ${username} ${phone}`, async ({
+    context,
+    auth,
+  }) => {
     const page = await context.newPage()
     await context.addInitScript((token) => {
       localStorage.setItem('jwt', token)
@@ -23,7 +25,7 @@ import { faker } from '@faker-js/faker/locale/ar'
     await page.getByTestId('createOrder-button').click()
     await expect(page.getByTestId('orderSuccessfullyCreated-popup-ok-button')).toBeVisible()
   })
-});
+})
 
 test('create order through UI with fixture', async ({ context, auth }) => {
   const page = await context.newPage()
@@ -37,7 +39,11 @@ test('create order through UI with fixture', async ({ context, auth }) => {
   await expect(page.getByTestId('orderSuccessfullyCreated-popup-ok-button')).toBeVisible()
 })
 
-test('search for an existing order created through API with fixture', async ({ context, auth, orderId, }) => {
+test('search for an existing order created through API with fixture', async ({
+  context,
+  auth,
+  orderId,
+}) => {
   // Set JWT in localStorage
   await context.addInitScript((token) => {
     localStorage.setItem('jwt', token)

@@ -10,7 +10,6 @@ type Fixtures = {
 }
 
 export const test = base.extend<Fixtures>({
-
   auth: async ({ request }, use) => {
     console.log('Init: getting jwt')
     const response = await request.post(`${BASE_API}${loginPath}`, {
@@ -36,7 +35,6 @@ export const test = base.extend<Fixtures>({
   },
 
   mainPage: async ({ context, auth }, use) => {
-
     const mainPage = await context.newPage()
     await mainPage.goto(SERVICE_URL)
     await context.addInitScript((token) => {

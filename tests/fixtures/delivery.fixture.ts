@@ -10,16 +10,15 @@ type Fixtures = {
 }
 
 export const test = base.extend<Fixtures>({
-
   auth: async ({ request }, use) => {
     // Authorization fixture: Fetch JWT and provide it
     console.log('Init: getting jwt')
     const response = await request.post(`${BASE_API}${loginPath}`, {
       data: LoginDto.createLoginWithCorrectData(),
     })
-    const jwt:string = await response.text()
+    const jwt: string = await response.text()
 
-    await use(jwt);
+    await use(jwt)
   },
 
   orderId: async ({ auth, request }, use) => {

@@ -8,7 +8,7 @@ test('create order through UI with fixture', async ({ context, auth }) => {
   // Set JWT in localStorage
   await context.addInitScript((token) => {
     localStorage.setItem('jwt', token)
-  }, auth.jwt)
+  }, auth)
 
   await page.goto(SERVICE_URL)
   await page.getByTestId('username-input').fill(faker.internet.username())
@@ -25,7 +25,7 @@ test('search for an existing order created through API with fixture', async ({
   // Set JWT in localStorage
   await context.addInitScript((token) => {
     localStorage.setItem('jwt', token)
-  }, auth.jwt)
+  }, auth)
 
   // Search for the created order through the UI
   const page = await context.newPage()

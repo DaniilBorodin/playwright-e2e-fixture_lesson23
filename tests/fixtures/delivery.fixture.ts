@@ -4,21 +4,22 @@ import { LoginDto } from '../dto/login-dto'
 import { OrderDto } from '../dto/order-dto'
 
 type Fixtures = {
-  auth: { jwt: string }
+  auth: string
   orderId: string
   mainPage: Page
 }
 
 export const test = base.extend<Fixtures>({
+
   auth: async ({ request }, use) => {
     // Authorization fixture: Fetch JWT and provide it
     console.log('Init: getting jwt')
     const response = await request.post(`${BASE_API}${loginPath}`, {
       data: LoginDto.createLoginWithCorrectData(),
     })
-    const jwt = await response.text()
+    const jwt:string = await response.text()
 
-    await use({ jwt })
+    await use(jwt);
   },
 
   orderId: async ({ auth, request }, use) => {
@@ -26,7 +27,7 @@ export const test = base.extend<Fixtures>({
     const response = await request.post(`${BASE_API}${orderPath}`, {
       data: OrderDto.createOrderWithoutId(),
       headers: {
-        Authorization: `Bearer ${auth.jwt}`,
+        Authorization: `Bearer ${auth}`,
       },
     })
 
@@ -42,7 +43,7 @@ export const test = base.extend<Fixtures>({
 
     await context.addInitScript((token) => {
       localStorage.setItem('jwt', token)
-    }, auth.jwt)
+    }, auth)
 
     await mainPage.reload()
     await mainPage.route(`${BASE_API}${orderPath}/*`, (route) =>

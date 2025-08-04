@@ -10,8 +10,8 @@ type Fixtures = {
 }
 
 export const test = base.extend<Fixtures>({
+
   auth: async ({ request }, use) => {
-    // Authorization fixture: Fetch JWT and provide it
     console.log('Init: getting jwt')
     const response = await request.post(`${BASE_API}${loginPath}`, {
       data: LoginDto.createLoginWithCorrectData(),
@@ -22,7 +22,6 @@ export const test = base.extend<Fixtures>({
   },
 
   orderId: async ({ auth, request }, use) => {
-    // Order ID fixture: Create an order and expose the orderId
     const response = await request.post(`${BASE_API}${orderPath}`, {
       data: OrderDto.createOrderWithoutId(),
       headers: {
@@ -37,14 +36,14 @@ export const test = base.extend<Fixtures>({
   },
 
   mainPage: async ({ context, auth }, use) => {
+
     const mainPage = await context.newPage()
     await mainPage.goto(SERVICE_URL)
-
     await context.addInitScript((token) => {
       localStorage.setItem('jwt', token)
     }, auth)
-
     await mainPage.reload()
+
     await mainPage.route(`${BASE_API}${orderPath}/*`, (route) =>
       route.fulfill({
         status: 200,
